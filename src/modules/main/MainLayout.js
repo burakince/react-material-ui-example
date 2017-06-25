@@ -1,40 +1,39 @@
 import React, { Component } from "react";
 import PropTypes from 'prop-types';
 
-import { AppBar, IconMenu, IconButton, MenuItem, Drawer } from 'material-ui';
-import { NavigationMoreVert } from 'material-ui/svg-icons';
+import { AppBar, IconButton, MenuItem, Drawer } from 'material-ui';
+import { NavigationClose } from 'material-ui/svg-icons';
+import withWidth, { SMALL, MEDIUM, LARGE } from 'material-ui/utils/withWidth';
+import spacing from 'material-ui/styles/spacing';
 
-const Logged = (props) => (
-  <IconMenu
-    {...props}
-    iconButtonElement={
-      <IconButton><NavigationMoreVert /></IconButton>
-    }
-    targetOrigin={{horizontal: 'right', vertical: 'top'}}
-    anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-  >
-    <MenuItem primaryText="Refresh" />
-    <MenuItem primaryText="Help" />
-    <MenuItem primaryText="Sign out" />
-  </IconMenu>
-);
-
-Logged.muiName = 'IconMenu';
+import Logged from './containers/Logged';
 
 class MainLayout extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {open: false};
+  }
+
+  handleToggle = () => {
+    this.setState({
+      open: !this.state.open
+    });
+  };
+
   render() {
     return (
       <div>
         <AppBar
           title="Title"
-          showMenuIconButton={false}
+          onLeftIconButtonTouchTap={this.handleToggle}
+          iconElementLeft={this.state.open ? <IconButton><NavigationClose /></IconButton> : null}
           iconElementRight={<Logged />}
-          style={{paddingLeft: 224}}
+          style={{paddingLeft: this.state.open ? 224 : 24}}
         />
         <Drawer
-          docker={true}
+          docker={false}
+          open={this.state.open}
           width={200}
-          open={true}
         >
           <MenuItem>Menu Item 1</MenuItem>
           <MenuItem>Menu Item 2</MenuItem>
@@ -51,4 +50,4 @@ MainLayout.propTypes = {
   children: PropTypes.object.isRequired
 };
 
-export default MainLayout;
+export default withWidth()(MainLayout);
